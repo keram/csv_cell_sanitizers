@@ -25,28 +25,28 @@ module CsvCellSanitizers
       result = CSV.generate do |csv|
         csv.extend(ExcelInjection)
 
-        csv << [1, '=3+4']
+        csv << ['=3+4']
       end
 
-      assert_equal "1,'=3+4\n", result
+      assert_equal "'=3+4\n", result
     end
 
     def test_that_it_does_not_sanitize_safe_string
       result = CSV.generate do |csv|
         csv.extend(ExcelInjection)
 
-        csv << [1, '3+4']
+        csv << ['3+4']
       end
 
-      assert_equal "1,3+4\n", result
+      assert_equal "3+4\n", result
     end
 
     def test_that_it_does_not_affect_non_extended_csv
       result = CSV.generate do |csv|
-        csv << [1, '=3+4']
+        csv << ['=3+4']
       end
 
-      assert_equal "1,=3+4\n", result
+      assert_equal "=3+4\n", result
     end
 
     def test_it_works_with_other_mixins
@@ -55,10 +55,10 @@ module CsvCellSanitizers
         csv.extend(ExcelInjection)
         csv.extend(SecondOtherMod)
 
-        csv << [2, '=2+2']
+        csv << ['=2+2']
       end
 
-      assert_equal "2,'=2+2\n", result
+      assert_equal "'=2+2\n", result
     end
 
     def test_safe_csv
