@@ -25,13 +25,15 @@ module CsvCellSanitizers
 
   module ExcelInjection
     using ExcelInjectionRefinements
+    EXCEL_RE = /\A(?==[^=]+)/
+    EXCEL_QUOTE_CHAR = '\''
 
     def <<(arg)
       super(arg.sanitize_excel_injection(self))
     end
 
     def sanitize_string_excel_injection(str)
-      str.gsub(/(\A=)(?=[^=]+)/, "'=")
+      str.sub(EXCEL_RE, EXCEL_QUOTE_CHAR)
     end
   end
 end
