@@ -25,10 +25,10 @@ module CsvCellSanitizers
       result = CSV.generate do |csv|
         csv.extend(ExcelInjection)
 
-        csv << ['=3+4']
+        csv << ['=3+4', '=second']
       end
 
-      assert_equal "'=3+4\n", result
+      assert_equal "'=3+4,'=second\n", result
     end
 
     def test_that_it_does_not_sanitize_safe_string
@@ -68,18 +68,6 @@ module CsvCellSanitizers
       result = SafeCSV.generate { |csv| csv << ['=x'] }
 
       assert_equal("'=x\n", result)
-    end
-
-    def test_not_sanitize_one_char_str
-      result = SafeCSV.generate_line(['='])
-
-      assert_equal("=\n", result)
-    end
-
-    def test_not_sanitize_two_or_more_equal_signs_in_row
-      result = SafeCSV.generate_line(['==xx'])
-
-      assert_equal("==xx\n", result)
     end
   end
 end

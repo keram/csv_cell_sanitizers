@@ -25,7 +25,7 @@ module CsvCellSanitizers
 
   module ExcelInjection
     using ExcelInjectionRefinements
-    EXCEL_RE = /\A(?==[^=]+)/
+    EXCEL_RE = /\A(?==)/
     EXCEL_QUOTE_CHAR = '\''
 
     def <<(arg)
