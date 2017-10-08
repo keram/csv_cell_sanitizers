@@ -3,6 +3,7 @@
 require 'test_helper'
 require 'benchmark'
 require 'csv'
+require 'benchmark/memory'
 
 module CsvCellSanitizers
   class SaveCSV < CSV
@@ -12,6 +13,13 @@ module CsvCellSanitizers
   class ExcelInjectionBenchmark < Minitest::Benchmark
     def bench_performance_against_non_sanitized_csv
       Benchmark.bm(10) do |reporter|
+        generate_standard(reporter, rows)
+        generate_extended(reporter, rows)
+        generate_if_else_everything(reporter, rows)
+        generate_if_else_with_sub(reporter, rows)
+        generate_safecsv(reporter, rows)
+      end
+      Benchmark.memory do |reporter|
         generate_standard(reporter, rows)
         generate_extended(reporter, rows)
         generate_if_else_everything(reporter, rows)
@@ -72,7 +80,7 @@ module CsvCellSanitizers
         reporter.report('if_els_s') do
           rows.each do |row|
             csv << if sanitize
-                     row.map { |item| item.to_s.sub(/(\A=)(?=[^=]+)/, "'=") }
+                     row.map { |item| item.to_s.sub(/\A(?==[^=]+)/, "'") }
                    else
                      row
                    end
